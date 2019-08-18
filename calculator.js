@@ -1,12 +1,10 @@
 let screen = document.querySelector('#scrn');
 let result = null;
 let resultString = '';
-let storedResult;
 let operatorSymbol = null;
 let equalPressed = false;
 
 function calculatorStart () {
-console.log(storedResult);
   getUserInput();
 }
 
@@ -77,7 +75,6 @@ function operate(operator) {   // perform calculations
         operatorSymbol = '+';
         equalPressed = false;
       }
-      storedResult = screen.textContent;
       screen.textContent = '';
       break;
 
