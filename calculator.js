@@ -1,20 +1,27 @@
 let screen = document.querySelector('#scrn');
 let result = null;
 let resultString = '';
+let storedResult;
 let operatorSymbol = null;
 let equalPressed = false;
 
-function getUserInput () {   // listens for user input
+function calculatorStart () {
+console.log(storedResult);
+  getUserInput();
+}
+
+function getUserInput() {   // listens for user input
   let calcButton = document.querySelectorAll('button');
 
   calcButton.forEach(function(button) {
     button.addEventListener('click', () => {
 
-      if (equalPressed == true && !isNaN(button.textContent) || button.textContent == 'C') {   // clear the screen
+      if (equalPressed == true && !isNaN(button.textContent) || equalPressed == true && button.textContent == '.' || 
+        button.textContent == 'C') {   // clear the screen when input after pressing equals
         clearScreen(button.textContent);
       
       } else if (!isNaN(button.textContent) || button.textContent == '.') {   // display digits on screen
-        showOnScreen(button.textContent);  
+        showOnScreen(button.textContent);
       
       } else if (button.textContent == '⌫' || button.textContent == '=') {   // perform a utility function
         runUtility(button.textContent);
@@ -27,26 +34,25 @@ function getUserInput () {   // listens for user input
   });
 }
 
-function showOnScreen(digit) {   
+function showOnScreen(digit) {   // display user input on screen
   screen.setAttribute('style', 'color: white');
 
-  if ((digit == 0) && (screen.textContent == 0)) {   // prevents users from inputting zeroes
+  if ((digit == 0) && (screen.textContent == 0) && (screen.textContent.split('.').length-1 < 1)) {   
+    // prevents users from inputting zeroes unless a decimal is present
     screen.textContent = 0;
   
   } else if (screen.textContent.length > 10) {   // prevents user from inputting more than 10 digits
+    return false;
 
-  // } else if (screen.textContent.indexOf('.') != -1) {   // prevents users from inputting more than one decimal
-  
-  } else if (screen.textContent.split('.').length-1 > 1) {   // prevents users from inputting more than one decimal
-    screen.textContent = screen.textContent.slice(0, -1);
-
-console.log('after decimal: ' + screen.textContent);
-
-  } else if ((screen.textContent == 0) && (digit != 0)) {   // displays the first non-zero number
+  } else if ((screen.textContent == 0) && (digit != 0) && (screen.textContent.split('.').length-1 < 1)) {   
+    // displays the first non-zero number
     screen.textContent = '';
     screen.textContent += digit;
 
-  } else {   // draw digits onto calculator screen
+  } else if (digit == '.' && screen.textContent.split('.').length-1 < 1) {   // prevents multiple decimals
+    screen.textContent += digit;
+
+  } else if (digit != '.') {   // draw digits onto calculator screen
     screen.textContent += digit;
   }
 }
@@ -71,6 +77,7 @@ function operate(operator) {   // perform calculations
         operatorSymbol = '+';
         equalPressed = false;
       }
+      storedResult = screen.textContent;
       screen.textContent = '';
       break;
 
@@ -182,7 +189,7 @@ function clearScreen(utilityButton) {   // clear the screen and reset values
   screen.setAttribute('style', 'color: white');
 }
 
-function runUtility(utilityButton) {   // clear, backspace, and equals utilities
+function runUtility(utilityButton) {   // decimal, backspace, and equals utilities
   switch (utilityButton) {
 
     case '⌫':
@@ -200,14 +207,14 @@ function runUtility(utilityButton) {   // clear, backspace, and equals utilities
   }
 }
 
-function finalResult(opSymbol) {   // perform final calculations
+function finalResult(operator) {   // perform final calculations
   screen.setAttribute('style', 'color: yellow');
   
-  switch (opSymbol) {
+  switch (operator) {
   
     case '+':
       resultString = +result + +screen.textContent;
-      if ((String(resultString).length) >= 7) {   // check to see if number is over 10 digits
+      if ((String(resultString).length) >= 7) {   // check to see if number will overflow display
         resultString = Number(resultString);
         screen.textContent = resultString.toPrecision(7);
       } else {
@@ -220,7 +227,7 @@ function finalResult(opSymbol) {   // perform final calculations
 
     case '-':
       resultString = +result - +screen.textContent;
-      if ((String(resultString).length) >= 7) {   // check to see if number is over 10 digits
+      if ((String(resultString).length) >= 7) {   // check to see if number will overflow display
         resultString = Number(resultString);
         screen.textContent = resultString.toPrecision(7);
       } else {
@@ -233,7 +240,7 @@ function finalResult(opSymbol) {   // perform final calculations
 
     case '×':
       resultString = +result * +screen.textContent;
-      if ((String(resultString).length) >= 7) {   // check to see if number is over 10 digits
+      if ((String(resultString).length) >= 7) {   // check to see if number will overflow display
         resultString = Number(resultString);
         screen.textContent = resultString.toPrecision(7);
       } else {
@@ -263,4 +270,4 @@ function finalResult(opSymbol) {   // perform final calculations
   }
 }
 
-getUserInput();   // run the calculator 
+calculatorStart();   // run the calculator 

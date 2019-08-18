@@ -35,13 +35,6 @@ button {
   background-color: #0A4B59;
 }
 
-.calculator > div {
-  /* font-family: helvetica;
-  font-size: 25px;
-  color: white;
-  color: #F2AC29; */
-}
-
 #scrn {
   grid-area: scrn;
   grid-gap: 50px;
